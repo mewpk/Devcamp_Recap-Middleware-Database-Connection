@@ -1,30 +1,33 @@
 const express = require('express');
-const cors = require("cors");
-const mysql = require('mysql2/promise');
 const app = express();
-const bodyParser = require("body-parser")
+const pool  = require('./config/database');
 
-app.use(cors());
-app.use(bodyParser.urlencoded({extended :false}));
-app.use(bodyParser.json());
+const myModule = require('./model/my_module') (pool);
 
-
-app.get("/from_user/:id",(req,res)=>{
-
-
-})
-
-
-
-
+app.get('/from_user/:id', async function (req, res, next) {
+    const data = await myModule.getUserId(req.params.id) 
+    let additionalDate = await new Date().toISOString()
+    res.json(
+        { data,
+            additionalDate}
+           );
+    next();
+});
 
 
+app.get('/from_student/:id', async function (req, res, next) {
+    const data = await myModule.getStudentId(req.params.id) 
+    let additionalDate = await new Date().toISOString()
+
+ 
+    res.json(
+    { data,
+        additionalDate}
+       );
+    next();
+});
+app.listen(3000,()=>{
+    console.log(`SERVER START PORT ====> 3000`);
+});
 
 
-
-
-
-
-app.listen(3000, ()=>{
-    console.log(`SERVER START PORT =====> 3000`); 
-})
